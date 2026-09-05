@@ -4,9 +4,6 @@ from sklearn.compose import ColumnTransformer
 from sklearn.pipeline import Pipeline
 
 def get_categorical_encoder(method='none'):
-    """
-    Retorna o transformador adequado para variáveis categóricas.
-    """
     if method == 'one-hot':
         return OneHotEncoder(sparse_output=False, handle_unknown='ignore')
     elif method == 'label':
@@ -15,9 +12,6 @@ def get_categorical_encoder(method='none'):
         return 'passthrough'
 
 def get_numeric_scaler(method='none'):
-    """
-    Retorna o transformador adequado para variáveis numéricas.
-    """
     if method == 'standardization':
         return StandardScaler()
     elif method == 'none' or method is None:
@@ -25,24 +19,20 @@ def get_numeric_scaler(method='none'):
 
 def build_preprocessor(numeric_cols, categorical_cols, scaling_method=None, encoding_method=None):
     """
-    Constrói um ColumnTransformer que:
-      - aplica scaler nas numéricas
-      - aplica encoder nas categóricas
-      - REMOVE a coluna sensível (se fornecida)
-      - descarta quaisquer colunas que não estejam listadas 
-    
+    Builds a ColumnTransformer that:
+    - applies scaling to numerical features
+    - applies encoding to categorical features
+    - drops any columns not explicitly listed
+
     Args:
-        numeric_cols (list): Lista com o nome das colunas numéricas.
-        categorical_cols (list): Lista com o nome das colunas categóricas.
-        sensitive_attribute (str): Nome da coluna do atributo sensível que não deve ser alterada.
-        scaling_method (str): 'standardization' ou 'none'.
-        encoding_method (str): 'one-hot', 'label' ou 'none'.
-        
+        numeric_cols (list): List of numerical feature names.
+        categorical_cols (list): List of categorical feature names.
+        scaling_method (str): 'standardization' or 'none'.
+        encoding_method (str): 'one-hot', 'label', or 'none'.
+
     Returns:
-        ColumnTransformer: Objeto pronto para ser inserido em um Pipeline do sklearn.
+        ColumnTransformer: A transformer ready to be used in a scikit-learn Pipeline.
     """
-    
-    # Criamos cópias das listas para não alterar as variáveis originais fora da função
     num_cols_to_transform = list(numeric_cols)
     cat_cols_to_transform = list(categorical_cols)
 
@@ -54,12 +44,12 @@ def build_preprocessor(numeric_cols, categorical_cols, scaling_method=None, enco
         ('encoder', get_categorical_encoder(encoding_method))
     ])
 
-    # Combina tudo em um ColumnTransformer
     preprocessor = ColumnTransformer(
         transformers=[
             ('num', numeric_transformer, num_cols_to_transform),
             ('cat', categorical_transformer, cat_cols_to_transform)
         ],
+        verbose_feature_names_out=False
     )
     
     return preprocessor

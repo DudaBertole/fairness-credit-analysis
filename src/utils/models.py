@@ -3,16 +3,16 @@ from sklearn.ensemble import RandomForestClassifier, GradientBoostingClassifier
 from aif360.algorithms.inprocessing import AdversarialDebiasing, PrejudiceRemover
 from scipy.stats import loguniform, randint, uniform
 
-def get_model(model_name, random_state=42):
+def get_model(model_name, random_state=2):
     """
-    Retorna a instância do modelo escolhido.
+    Returns the instance of the selected model.
     
     Args:
-        model_name (str): 'logistic_regression', 'random_forest' ou 'gradient_boosting', 
+        model_name (str): 'logistic_regression', 'random_forest', or 'gradient_boosting'
         random_state (int): seed
                   
     Returns:
-        Estimator: Instância do modelo do sklearn
+        Estimator: Instance of the sklearn model
     """
     if model_name == 'logistic_regression':
         return LogisticRegression(max_iter=2000, random_state=random_state)
@@ -25,9 +25,6 @@ def get_model(model_name, random_state=42):
 
 
 def get_hyperparameters(model_name):
-    """
-    Retorna os dicionários de hiperparâmetros para Grid Search e Random Search.
-    """
     if model_name == 'logistic_regression':
         grid_params = {
             "C": [0.01, 0.1, 1, 10],
